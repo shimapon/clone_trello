@@ -8,6 +8,7 @@ import '../../index.css';
 interface State{
     boardnames:string[];
     boardname:string;
+    openflag:boolean;
 }
 
 interface Props{}
@@ -19,12 +20,15 @@ class TopPage extends React.Component<Props, State> {
         this.state = {
           boardname: "",
           boardnames:["Board A","Board B"],
+          openflag:false,
         };
     
         this.handleClickBoard = this.handleClickBoard.bind(this);
         this.handleClickCreate = this.handleClickCreate.bind(this);
         this.handleClickCancel = this.handleClickCancel.bind(this);
         this.handleChangeBoardName = this.handleChangeBoardName.bind(this)
+        this.handleClickFabButton = this.handleClickFabButton.bind(this)
+        
 
     }
 
@@ -37,8 +41,15 @@ class TopPage extends React.Component<Props, State> {
         alert("押した")
     }
 
+    handleClickFabButton() {
+        this.setState(
+            {
+                openflag:true
+            }
+        );
+    }
+
     handleClickCreate() {
-        alert(this.state.boardname)
         let boardnames=this.state.boardnames
         boardnames.push(this.state.boardname)
         this.setState(
@@ -50,8 +61,14 @@ class TopPage extends React.Component<Props, State> {
 
     }
 
+
     handleClickCancel() {
-        alert(this.state.boardname)
+        this.setState(
+            {
+                boardname:"",
+                openflag:false,
+            }
+        );
     }
 
     render(){
@@ -70,10 +87,12 @@ class TopPage extends React.Component<Props, State> {
                     textCancel={"Cancel"}
                     textCreate={"Create"}
                     inputlabel={"Board Name"}
+                    openflag={this.state.openflag}
+                    onClickFab={this.handleClickFabButton}
                     />
                     <BoardList
                     boardnames={this.state.boardnames}
-                    onClick={this.handleChangeBoardName}
+                    onClick={this.handleClickBoard}
                     />
                 </div>
             </div>
