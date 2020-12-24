@@ -31,7 +31,7 @@ function Board(props:Props){
     const classes = useStyles();
 
   return(
-    <Card className={classes.root}>
+    <Card className={classes.root} onClick={props.onClick}>
         <CardActionArea>
             <Typography variant="h5" component="h2" className={classes.center}>
             {props.text}

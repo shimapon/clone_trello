@@ -5,7 +5,9 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-
+import AddIcon from '@material-ui/icons/Add';
+import Fab from '@material-ui/core/Fab';
+import Box from '@material-ui/core/Box';
 
 
 interface Props{
@@ -15,13 +17,17 @@ interface Props{
     inputlabel:string;
     onClickCreate:VoidFunction;
     onClickCancel:VoidFunction;
+    onClickFab:VoidFunction;
     textCreate:string;
     textCancel:string;
+    openflag:boolean;
 }
 
 const useStyles = makeStyles({
     root: {
       minWidth: 275,
+        height: 'fit-content',
+        margin:'auto 0',
     },
     center: {
         margin: '10px auto',
@@ -32,6 +38,11 @@ const useStyles = makeStyles({
         flexDirection: 'column',
         margin: '10px auto',
         width:'fit-content', 
+    },
+    add: {
+        display: 'flex',
+        flexDirection: 'column',
+        margin: '10px auto',
     }
 });
 
@@ -40,20 +51,53 @@ function CreateBoard(props:Props){
     const classes = useStyles();
 
 
+//   return(
+//     <Card className={classes.root} variant="outlined">
+//         <CardContent>
+//             <Typography variant="h5" component="h2" className={classes.center}>
+//                 Create Board
+//             </Typography>
+//             <Input
+//             onChange={props.onChange}
+//             value={props.value}
+//             inputlabel={props.inputlabel}
+//             />
+//             <Button size="large" variant="contained" color="primary" className={classes.button} onClick={props.onClickCreate}>{props.textCreate}</Button>
+//             <Button size="large" color="primary" className={classes.button} onClick={props.onClickCancel}>{props.textCancel}</Button>
+//         </CardContent>
+//     </Card>
+//   );
+
   return(
-    <Card className={classes.root} variant="outlined">
+    <Card className={classes.root} >
         <CardContent>
-            <Typography variant="h5" component="h2" className={classes.center}>
+            <Typography variant="h5" component="h2" className={classes.center} >
                 Create Board
             </Typography>
-            <Input
-            onChange={props.onChange}
-            value={props.value}
-            inputlabel={props.inputlabel}
-            />
-            <Button size="large" variant="contained" color="primary" className={classes.button} onClick={props.onClickCreate}>{props.textCreate}</Button>
-            <Button size="large" color="primary" className={classes.button} onClick={props.onClickCancel}>{props.textCancel}</Button>
+            {props.openflag
+                ? 
+                <Box>
+                <Input
+                onChange={props.onChange}
+                value={props.value}
+                inputlabel={props.inputlabel}
+                />
+                <Button size="large" variant="contained" color="primary" className={classes.button} onClick={props.onClickCreate}>{props.textCreate}</Button>
+                <Button size="large" color="primary" className={classes.button} onClick={props.onClickCancel}>{props.textCancel}</Button>
+                </Box> 
+                
 
+                :
+                <Fab 
+                color="primary"  
+                className={classes.add} 
+                size="large" 
+                aria-label="add"
+                onClick={props.onClickFab}
+                >
+                    <AddIcon/>
+                </Fab>
+            }
         </CardContent>
     </Card>
   );
