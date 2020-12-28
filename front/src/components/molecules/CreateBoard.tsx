@@ -50,24 +50,6 @@ const useStyles = makeStyles({
 function CreateBoard(props:Props){
     const classes = useStyles();
 
-
-//   return(
-//     <Card className={classes.root} variant="outlined">
-//         <CardContent>
-//             <Typography variant="h5" component="h2" className={classes.center}>
-//                 Create Board
-//             </Typography>
-//             <Input
-//             onChange={props.onChange}
-//             value={props.value}
-//             inputlabel={props.inputlabel}
-//             />
-//             <Button size="large" variant="contained" color="primary" className={classes.button} onClick={props.onClickCreate}>{props.textCreate}</Button>
-//             <Button size="large" color="primary" className={classes.button} onClick={props.onClickCancel}>{props.textCancel}</Button>
-//         </CardContent>
-//     </Card>
-//   );
-
   return(
     <Card className={classes.root} >
         <CardContent>
@@ -81,6 +63,7 @@ function CreateBoard(props:Props){
                 onChange={props.onChange}
                 value={props.value}
                 inputlabel={props.inputlabel}
+                className="input"
                 />
                 <Button size="large" variant="contained" color="primary" className={classes.button} onClick={props.onClickCreate}>{props.textCreate}</Button>
                 <Button size="large" color="primary" className={classes.button} onClick={props.onClickCancel}>{props.textCancel}</Button>

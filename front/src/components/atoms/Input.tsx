@@ -5,13 +5,14 @@ interface Props{
     onChange: any;
     value: string;
     inputlabel:string;
+    className:string;
 }
 
 // カード一枚のコンポーネント Atoms
 function Input(props:Props){
   return(
     <TextField
-    className="input"
+    className={props.className}
     variant="outlined"
     margin="normal"
     required

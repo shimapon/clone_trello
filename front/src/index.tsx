@@ -1,14 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import TopPage from "./components/pages/TopPage";
+// import TopPage from "./components/pages/TopPage";
+import BoardPage from "./components/pages/BoardPage";
+
 
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <TopPage />
+    <BoardPage />
   </React.StrictMode>,
   document.getElementById('root')
 );
