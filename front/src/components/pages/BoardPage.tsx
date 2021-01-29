@@ -6,7 +6,9 @@ import BoardLabel from "../organisms/BoardLabel";
 import AddList from "../organisms/AddList";
 import CardList from "../organisms/CardList";
 
-interface Props {}
+interface Props {
+  history: any;
+}
 
 interface State {
   cardname: string;
@@ -39,6 +41,7 @@ class BoardPage extends React.Component<Props, State> {
     this.handleMoveTask = this.handleMoveTask.bind(this);
     this.handleClickClearKanBan = this.handleClickClearKanBan.bind(this);
     this.handleClickClearCard = this.handleClickClearCard.bind(this);
+    this.handleClickBackButton = this.handleClickBackButton.bind(this);
   }
 
   handleMoveTask(initialState: {
@@ -124,10 +127,14 @@ class BoardPage extends React.Component<Props, State> {
     });
   }
 
+  handleClickBackButton() {
+    this.props.history.push("/");
+  }
+
   render() {
     return (
       <div className="boardPage">
-        <BoardLabel />
+        <BoardLabel onClick={this.handleClickBackButton} />
 
         <div className="wrapper">
           <CardList
