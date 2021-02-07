@@ -19,6 +19,7 @@ interface Props {
   onClickAdd: any;
   onClickDelete: (id: number) => void;
   onClickDeleteCard: (id: number) => void;
+  onChange: any;
 
   idx: number;
   onMove: any;
@@ -42,6 +43,20 @@ const useStyles = makeStyles({
   },
 });
 
+const ItemTypes = ["item" as const];
+
+type ItemType = typeof ItemTypes[number];
+
+type Item = {
+  id: number;
+  type: ItemType;
+};
+
+type ItemWithIndex = Item & {
+  index: number;
+  status: string;
+};
+
 // カード一枚のコンポーネント Atoms
 function TaskList(props: Props) {
   const classes = useStyles();
@@ -50,20 +65,22 @@ function TaskList(props: Props) {
     accept: "task",
     // drop: (item, monitor) =>
     //   props.onMove(monitor.getItem().id, String(props.idx)),
-    hover(item, monitor) {
-      // console.log(item);
+    hover(dragItem: ItemWithIndex, monitor) {
       const it = monitor.getItem();
 
       if (!it.size.current) return;
 
-      const bottom = it.size.current.getBoundingClientRect().bottom;
+      const middleY =
+        (it.size.current.getBoundingClientRect().top +
+          it.size.current.getBoundingClientRect().bottom) /
+        2;
       const sizeY = it.size.current.getBoundingClientRect().height;
       const mousePosition = monitor.getClientOffset();
       if (!mousePosition) return;
 
-      const index = (mousePosition.y - bottom) / sizeY;
+      const index = (mousePosition.y - middleY) / sizeY;
 
-      let moveIndex = Math.floor(index) + it.index + 1;
+      let moveIndex = Math.trunc(index) + dragItem.index;
 
       if (props.tasks.length < moveIndex) {
         moveIndex = props.tasks.length;
@@ -73,34 +90,24 @@ function TaskList(props: Props) {
         moveIndex = 0;
       }
 
-      // console.log(moveIndex);
-
-      // console.log(Math.floor(index));
-
-      // console.log(bottom, sizeY);
-      // console.log(mousePosition);
-
-      if (String(props.idx) === it.status) {
-        console.log(moveIndex, it.index);
-
+      // 同じstatusでの移動
+      if (String(props.idx) === dragItem.status) {
         // 同じ時
-        if (
-          moveIndex === it.index ||
-          moveIndex + 1 === it.index ||
-          moveIndex - 1 === it.index
-        )
-          return;
+        if (moveIndex === it.index) return;
 
-        if (moveIndex > it.index) moveIndex -= 1;
-        else moveIndex += 1;
+        if (props.tasks.length <= moveIndex) {
+          moveIndex = props.tasks.length - 1;
+        }
 
         props.onMoveSome(it.id, String(props.idx), moveIndex);
+        dragItem.index = moveIndex;
+
         return;
       }
 
-      // console.log(moveIndex);
-
       props.onMove(it.id, String(props.idx), moveIndex);
+      dragItem.index = moveIndex;
+      dragItem.status = String(props.idx);
     },
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
@@ -114,7 +121,6 @@ function TaskList(props: Props) {
           {props.title}
         </Typography>
         <TextField
-          id="standard-basic"
           variant="outlined"
           margin="normal"
           fullWidth
@@ -129,11 +135,12 @@ function TaskList(props: Props) {
               );
             }
           }}
+          onChange={(event) => props.onChange(event)}
         />
         {props.tasks &&
-          props.tasks.map((task: any, idx: number) => (
+          props.tasks.map((task: any) => (
             <Task
-              key={"task" + idx}
+              key={"task" + task.id}
               {...task}
               onClickDelete={props.onClickDeleteCard}
             />

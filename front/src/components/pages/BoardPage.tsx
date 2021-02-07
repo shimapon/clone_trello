@@ -5,12 +5,16 @@ import AddList from "../organisms/AddList";
 import CardList from "../organisms/CardList";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { firebaseDb } from "../../firebase/index.js";
 
-interface Props {}
+interface Props {
+  history: any;
+  match: any;
+  location: any;
+}
 
 interface State {
   cardname: string;
+  taskname: string;
   initialState: {
     boardnames: string[];
     tasks: { id: number; name: string; status: string; index: number }[];
@@ -27,6 +31,7 @@ class BoardPage extends React.Component<Props, State> {
 
     this.state = {
       cardname: "",
+      taskname: "",
       initialState: {
         boardnames: [],
         tasks: [
@@ -50,61 +55,21 @@ class BoardPage extends React.Component<Props, State> {
     this.handleClickClearCard = this.handleClickClearCard.bind(this);
     this.handleMove = this.handleMove.bind(this);
     this.handleMoveSome = this.handleMoveSome.bind(this);
+    this.handleClickBackPage = this.handleClickBackPage.bind(this);
+    this.handleChangeTaskName = this.handleChangeTaskName.bind(this);
   }
 
   componentDidMount() {
-    let initialState: {
-      boardnames: string[];
-      tasks: { id: number; name: string; status: string; index: number }[];
-    } = {
-      boardnames: [],
-      tasks: [],
-    };
+    const id = this.props.match.params.id;
+    const appState1 = localStorage.getItem("kanbannames" + id);
+    const appState2 = localStorage.getItem("tasks" + id);
 
-    //articlesコレクションから1件データを取得
-    firebaseDb
-      .collection("task")
-      .limit(100)
-      .get()
-      .then((response) => {
-        //forEach()でドキュメントの配列がとれる
-        response.forEach((doc) => {
-          //data()でドキュメントがとれる
-          const document = doc.data();
-          console.log(document);
-
-          initialState.tasks.push({
-            id: document.id,
-            index: document.index,
-            status: document.status,
-            name: document.name,
-          });
-        });
-
-        this.setState({
-          initialState: initialState,
-        });
-      });
-
-    //articlesコレクションから1件データを取得
-    firebaseDb
-      .collection("kanbanNames")
-      .limit(100)
-      .get()
-      .then((response) => {
-        //forEach()でドキュメントの配列がとれる
-        response.forEach((doc) => {
-          //data()でドキュメントがとれる
-          const document = doc.data();
-          console.log(document);
-
-          initialState.boardnames.push(document.title);
-        });
-
-        this.setState({
-          initialState: initialState,
-        });
-      });
+    this.setState({
+      initialState: {
+        boardnames: appState1 ? JSON.parse(appState1) : [],
+        tasks: appState2 ? JSON.parse(appState2) : [],
+      },
+    });
   }
 
   handleMove(idx: number, tostatus: string, index: number) {
@@ -137,6 +102,11 @@ class BoardPage extends React.Component<Props, State> {
     this.setState({
       initialState: initialState,
     });
+
+    localStorage.setItem(
+      "tasks" + this.props.match.params.id,
+      JSON.stringify(initialState.tasks)
+    );
   }
 
   handleMoveSome(idx: number, tostatus: string, index: number) {
@@ -174,11 +144,23 @@ class BoardPage extends React.Component<Props, State> {
     this.setState({
       initialState: initialState,
     });
+
+    localStorage.setItem(
+      "tasks" + this.props.match.params.id,
+      JSON.stringify(initialState.tasks)
+    );
   }
 
   handleChangeCardName(event: any) {
     event.preventDefault();
+
     this.setState({ cardname: event.target.value });
+  }
+
+  handleChangeTaskName(event: any) {
+    event.preventDefault();
+
+    this.setState({ taskname: event.target.value });
   }
 
   handleClickAddCard() {
@@ -195,20 +177,25 @@ class BoardPage extends React.Component<Props, State> {
       cardname: "",
       initialState: initialState,
     });
+
+    localStorage.setItem(
+      "kanbannames" + this.props.match.params.id,
+      JSON.stringify(initialState.boardnames)
+    );
   }
 
   handleClickAdd(text: string, status: string) {
-    // if (this.state.cardname === "") {
-    //   alert("The card name in the text field is empty");
-    //   return false;
-    // }
+    if (this.state.taskname === "") {
+      alert("The card name in the text field is empty");
+      return false;
+    }
     const initialState = this.state.initialState;
     const tasks = initialState.tasks;
 
     const targetUsers = tasks.filter((v) => v.status === status);
 
     tasks.push({
-      id: tasks[tasks.length - 1].id + 1,
+      id: tasks.length + 1,
       name: text,
       status: status,
       index: targetUsers.length,
@@ -221,18 +208,10 @@ class BoardPage extends React.Component<Props, State> {
       initialState: initialState,
     });
 
-    var docData = {
-      id: tasks[tasks.length - 1].id + 1,
-      name: text,
-      status: status,
-      index: targetUsers.length,
-    };
-    firebaseDb
-      .collection("task")
-      .add(docData)
-      .then(function () {
-        console.log("Document successfully written!");
-      });
+    localStorage.setItem(
+      "tasks" + this.props.match.params.id,
+      JSON.stringify(initialState.tasks)
+    );
   }
 
   handleClickClearKanBan(id: number) {
@@ -249,6 +228,10 @@ class BoardPage extends React.Component<Props, State> {
     this.setState({
       initialState: initialState,
     });
+    localStorage.setItem(
+      "kanbannames" + this.props.match.params.id,
+      JSON.stringify(initialState.boardnames)
+    );
   }
 
   handleClickClearCard(id: number) {
@@ -264,13 +247,24 @@ class BoardPage extends React.Component<Props, State> {
     this.setState({
       initialState: initialState,
     });
+    localStorage.setItem(
+      "tasks" + this.props.match.params.id,
+      JSON.stringify(initialState.tasks)
+    );
+  }
+
+  handleClickBackPage() {
+    this.props.history.push("/");
   }
 
   render() {
     return (
       <DndProvider backend={HTML5Backend}>
         <div className="boardPage">
-          <BoardLabel />
+          <BoardLabel
+            onClick={this.handleClickBackPage}
+            title={this.props.location.state.cardname}
+          />
           <div className="wrapper">
             <CardList
               initialState={this.state.initialState}
@@ -279,6 +273,7 @@ class BoardPage extends React.Component<Props, State> {
               onClickDeleteCard={this.handleClickClearCard}
               onMove={this.handleMove}
               onMoveSome={this.handleMoveSome}
+              onChange={this.handleChangeTaskName}
             />
             <AddList
               onChange={this.handleChangeCardName}

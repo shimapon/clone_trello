@@ -13,6 +13,7 @@ interface Props {
   onClickDeleteCard: (id: number) => void;
   onMove: any;
   onMoveSome: any;
+  onChange: any;
 }
 
 // カード一枚のコンポーネント Atoms
@@ -39,6 +40,7 @@ function CardList(props: Props) {
               idx={idx}
               onMove={props.onMove}
               onMoveSome={props.onMoveSome}
+              onChange={props.onChange}
             />
           ))}
       </div>
