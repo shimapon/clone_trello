@@ -1,5 +1,8 @@
 # clone_trello
 
+## 開発中Gif
+![Board作成](https://user-images.githubusercontent.com/38938327/102718236-783ec880-432a-11eb-86c3-0de7c24a9e13.gif)
+
 
 ## 画面設計
 

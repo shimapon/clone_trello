@@ -7,7 +7,9 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { firebaseDb } from "../../firebase/index.js";
 
-interface Props {}
+interface Props {
+  history: any;
+}
 
 interface State {
   cardname: string;
@@ -50,6 +52,7 @@ class BoardPage extends React.Component<Props, State> {
     this.handleClickClearCard = this.handleClickClearCard.bind(this);
     this.handleMove = this.handleMove.bind(this);
     this.handleMoveSome = this.handleMoveSome.bind(this);
+
   }
 
   componentDidMount() {
@@ -266,6 +269,10 @@ class BoardPage extends React.Component<Props, State> {
     });
   }
 
+  handleClickBackButton() {
+    this.props.history.push("/");
+  }
+
   render() {
     return (
       <DndProvider backend={HTML5Backend}>
@@ -287,6 +294,7 @@ class BoardPage extends React.Component<Props, State> {
               inputlabel="add a list"
             />
           </div>
+
         </div>
       </DndProvider>
     );

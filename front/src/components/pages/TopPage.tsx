@@ -10,7 +10,9 @@ interface State {
   openflag: boolean;
 }
 
-interface Props {}
+interface Props {
+  history: any;
+}
 
 class TopPage extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -35,7 +37,7 @@ class TopPage extends React.Component<Props, State> {
   }
 
   handleClickBoard() {
-    alert("押した");
+    this.props.history.push("/b/1");
   }
 
   handleClickFabButton() {
