@@ -10,6 +10,8 @@ import TextField from "@material-ui/core/TextField";
 import { IconButton } from "@material-ui/core";
 import ClearIcon from "@material-ui/icons/Clear";
 
+import { useDrop } from "react-dnd";
+
 interface Props {
   tasks: any;
   title: string;
@@ -19,7 +21,8 @@ interface Props {
   onClickDeleteCard: (id: number) => void;
 
   idx: number;
-  reducer: any;
+  onMove: any;
+  onMoveSome: any;
 }
 
 const useStyles = makeStyles({
@@ -43,50 +46,70 @@ const useStyles = makeStyles({
 function TaskList(props: Props) {
   const classes = useStyles();
 
-  // コンテクストオブジェクト（React.createContext からの戻り値）を受け取り、そのコンテクストの現在値を返します。
-  // useContext に渡す引数はコンテクストオブジェクト自体であることを忘れないでください。
-  // useContext(MyContext) は現在のコンテクストの値を読み取り、その変化を購読することしかできません。
-  // コンテクストの値を設定するために、今後もツリーの上の階層で <MyContext.Provider> が必要です。
+  const [, drop] = useDrop({
+    accept: "task",
+    // drop: (item, monitor) =>
+    //   props.onMove(monitor.getItem().id, String(props.idx)),
+    hover(item, monitor) {
+      // console.log(item);
+      const it = monitor.getItem();
 
-  const handleDragOver = (event: React.DragEvent<HTMLElement>) => {
-    event.preventDefault();
-    if (event.dataTransfer) {
-      //ドロップ対象に入っている
-    }
-  };
+      if (!it.size.current) return;
 
-  // ドロップ時
-  const handleDrop = (event: React.DragEvent<HTMLElement>) => {
-    event.preventDefault();
+      const bottom = it.size.current.getBoundingClientRect().bottom;
+      const sizeY = it.size.current.getBoundingClientRect().height;
+      const mousePosition = monitor.getClientOffset();
+      if (!mousePosition) return;
 
-    const data = event.dataTransfer.getData("text/plain").split(",");
-    console.log(data); // [id, あったstatus]
-    console.log(props.status); // 移動後のstatus
+      const index = (mousePosition.y - bottom) / sizeY;
 
-    props.reducer({
-      type: "MOVE_TASK",
-      payload: {
-        id: Number(data[0]),
-        prevStatus: data[1],
-        newStatus: props.status,
-      },
-    });
-  };
+      let moveIndex = Math.floor(index) + it.index + 1;
 
-  const handleDragLeave = (event: React.DragEvent<HTMLElement>) => {
-    event.preventDefault();
-    // 離れた時に発火
-    console.log("dragleave");
-  };
+      if (props.tasks.length < moveIndex) {
+        moveIndex = props.tasks.length;
+      }
+
+      if (moveIndex < 0) {
+        moveIndex = 0;
+      }
+
+      // console.log(moveIndex);
+
+      // console.log(Math.floor(index));
+
+      // console.log(bottom, sizeY);
+      // console.log(mousePosition);
+
+      if (String(props.idx) === it.status) {
+        console.log(moveIndex, it.index);
+
+        // 同じ時
+        if (
+          moveIndex === it.index ||
+          moveIndex + 1 === it.index ||
+          moveIndex - 1 === it.index
+        )
+          return;
+
+        if (moveIndex > it.index) moveIndex -= 1;
+        else moveIndex += 1;
+
+        props.onMoveSome(it.id, String(props.idx), moveIndex);
+        return;
+      }
+
+      // console.log(moveIndex);
+
+      props.onMove(it.id, String(props.idx), moveIndex);
+    },
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+    }),
+  });
 
   return (
     <div className="tasklist">
-      <Card
-        className="box"
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onDragLeave={(e) => handleDragLeave(e)}
-      >
+      <Card className="box" ref={drop}>
         <Typography variant="h5" component="h2" className={classes.center}>
           {props.title}
         </Typography>
