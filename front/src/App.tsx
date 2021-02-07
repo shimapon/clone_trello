@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import BoardPage from "./components/pages/BoardPage";
 import TopPage from "./components/pages/TopPage";
 
+
 const App: React.FC = () => {
   return (
     <Router>

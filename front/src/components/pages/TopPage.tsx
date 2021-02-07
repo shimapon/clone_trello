@@ -47,6 +47,7 @@ class TopPage extends React.Component<Props, State> {
       pathname: "/board/" + id,
       state: { cardname: this.state.boardnames[id] },
     });
+
   }
 
   handleClickFabButton() {

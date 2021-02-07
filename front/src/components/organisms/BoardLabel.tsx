@@ -1,4 +1,5 @@
 import React from "react";
+
 import Title from "../atoms/Title";
 import KeyboardBackspaceIcon from "@material-ui/icons/KeyboardBackspace";
 import IconButton from "@material-ui/core/IconButton";
@@ -6,6 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 interface Props {
   onClick: () => void;
   title: string;
+
 }
 
 // カード一枚のコンポーネント Atoms
@@ -22,6 +24,7 @@ function BoardLabel(props: Props) {
       </IconButton>
 
       <Title text={props.title} />
+
     </div>
   );
 }

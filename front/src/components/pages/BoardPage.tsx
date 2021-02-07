@@ -57,6 +57,7 @@ class BoardPage extends React.Component<Props, State> {
     this.handleMoveSome = this.handleMoveSome.bind(this);
     this.handleClickBackPage = this.handleClickBackPage.bind(this);
     this.handleChangeTaskName = this.handleChangeTaskName.bind(this);
+
   }
 
   componentDidMount() {
@@ -257,6 +258,10 @@ class BoardPage extends React.Component<Props, State> {
     this.props.history.push("/");
   }
 
+  handleClickBackButton() {
+    this.props.history.push("/");
+  }
+
   render() {
     return (
       <DndProvider backend={HTML5Backend}>
@@ -282,6 +287,7 @@ class BoardPage extends React.Component<Props, State> {
               inputlabel="add a list"
             />
           </div>
+
         </div>
       </DndProvider>
     );
