@@ -20,7 +20,7 @@ class TopPage extends React.Component<Props, State> {
 
     this.state = {
       boardname: "",
-      boardnames: ["Board A", "Board B"],
+      boardnames: [],
       openflag: false,
     };
 
@@ -31,13 +31,23 @@ class TopPage extends React.Component<Props, State> {
     this.handleClickFabButton = this.handleClickFabButton.bind(this);
   }
 
+  componentDidMount() {
+    const appState = localStorage.getItem("boardnames");
+
+    this.setState({ boardnames: appState ? JSON.parse(appState) : [] });
+  }
+
   handleChangeBoardName(event: any) {
     event.preventDefault();
     this.setState({ boardname: event.target.value });
   }
 
-  handleClickBoard() {
-    this.props.history.push("/b/1");
+  handleClickBoard(id: number) {
+    this.props.history.push({
+      pathname: "/board/" + id,
+      state: { cardname: this.state.boardnames[id] },
+    });
+
   }
 
   handleClickFabButton() {
@@ -53,6 +63,8 @@ class TopPage extends React.Component<Props, State> {
       boardnames: boardnames,
       boardname: "",
     });
+
+    localStorage.setItem("boardnames", JSON.stringify(boardnames));
   }
 
   handleClickCancel() {

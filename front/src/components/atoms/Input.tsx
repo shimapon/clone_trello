@@ -16,10 +16,7 @@ function Input(props: Props) {
       variant="outlined"
       margin="normal"
       fullWidth
-      id="formboardname"
       label={props.inputlabel}
-      name="formboardname"
-      autoComplete="formboardname"
       value={props.value}
       onChange={props.onChange}
     />

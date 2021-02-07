@@ -8,12 +8,13 @@ interface Props {
 }
 
 class BoardList extends React.Component<Props> {
-  renderBoard(data: string) {
+  renderBoard(data: string, index: number) {
     return (
       <Board
         text={data}
         onClick={this.props.onClick}
         key={data + "boardlist11"}
+        id={index}
       />
     );
   }
@@ -21,8 +22,8 @@ class BoardList extends React.Component<Props> {
   render() {
     return (
       <div className="boardlist">
-        {this.props.boardnames.map((data: string) => {
-          return this.renderBoard(data);
+        {this.props.boardnames.map((data: string, index: number) => {
+          return this.renderBoard(data, index);
         })}
       </div>
     );

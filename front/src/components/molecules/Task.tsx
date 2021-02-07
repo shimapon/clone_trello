@@ -39,7 +39,7 @@ const useStyles = makeStyles({
 
 function Task(props: Props) {
   const classes = useStyles();
-  const elm = useRef(null);
+  const elm = useRef<HTMLDivElement>(null);
 
   const [{ isDragging }, drag] = useDrag({
     item: {
